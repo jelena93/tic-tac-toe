@@ -1,0 +1,6 @@
+/TicTacToe/nbproject/private/
+/TicTacToeServer/nbproject/private/
+/TicTacToeServer/build/
+/TicTacToeServer/dist/
+
+*.class
