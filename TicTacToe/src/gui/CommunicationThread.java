@@ -23,11 +23,11 @@ public class CommunicationThread extends Thread {
     Socket soketZaKomunikaciju;
     PrintStream izlazniTok;
     BufferedReader ulazniTok;
-    Main glavna;
-    Game f;
+    FrmLogin glavna;
+    FrmGame f;
     String username;
 
-    public CommunicationThread(Main glavna, String username) {
+    public CommunicationThread(FrmLogin glavna, String username) {
         this.glavna = glavna;
         this.username = username;
     }
@@ -45,12 +45,12 @@ public class CommunicationThread extends Thread {
             while (true) {
                 String odg = ulazniTok.readLine();
                 if (odg.equals("Ok")) {
-                    f = new Game(izlazniTok, ulazniTok, "o", username);
+                    f = new FrmGame(izlazniTok, ulazniTok, "o", username);
                     glavna.setVisible(false);
                     f.setVisible(true);
                 } else {
                     if (odg.equals("prvi")) {
-                        f = new Game(izlazniTok, ulazniTok, "x", username);
+                        f = new FrmGame(izlazniTok, ulazniTok, "x", username);
                         glavna.setVisible(false);
                         f.setVisible(true);
                     } else {

@@ -13,10 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -26,22 +23,15 @@ public class Panel extends javax.swing.JPanel implements MouseListener {
 
     BufferedReader ulazniTok;
     PrintStream izlazniTok;
-    Game frmGlavna;
-    int pozicija;
+    FrmGame frmGlavna;
+    private int position;
     String potez;
     String igrac;
     boolean odigrao = false;
 
-    public Panel(BufferedReader ulazniTok, PrintStream izlazniTok, Game frmGlavna, int pozicija, String potez) {
-        initComponents();
-        setPreferredSize(new Dimension(30, 30));
-        this.ulazniTok = ulazniTok;
-        this.izlazniTok = izlazniTok;
-        this.frmGlavna = frmGlavna;
-        this.pozicija = pozicija;
-        this.potez = potez;
-        this.igrac = null;
-        addMouseListener(this);
+    public Panel(int pozicija) {
+        this.position = pozicija;
+        prepareForm();
     }
 
     @Override
@@ -52,14 +42,14 @@ public class Panel extends javax.swing.JPanel implements MouseListener {
         g2d.setStroke(new BasicStroke(3));
 
         g.setColor(Color.white);
-        if (pozicija == 1 || pozicija == 2 || pozicija == 4 || pozicija == 5) {
+        if (position == 1 || position == 2 || position == 4 || position == 5) {
             g.drawLine(getWidth(), 0, getWidth(), getHeight());
             g.drawLine(0, getHeight(), getWidth(), getHeight());
         } else {
-            if (pozicija == 3 || pozicija == 6) {
+            if (position == 3 || position == 6) {
                 g.drawLine(0, getHeight(), getWidth(), getHeight());
             } else {
-                if (pozicija == 7 || pozicija == 8) {
+                if (position == 7 || position == 8) {
                     g.drawLine(getWidth(), 0, getWidth(), getHeight());
                 }
             }
@@ -111,7 +101,7 @@ public class Panel extends javax.swing.JPanel implements MouseListener {
         if (frmGlavna.yourTurn && !odigrao && igrac == null) {
             odigrao = true;
             repaint();
-            frmGlavna.posaljiPotez(potez, pozicija);
+            frmGlavna.posaljiPotez(potez, position);
 
         }
     }
@@ -136,5 +126,10 @@ public class Panel extends javax.swing.JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+    }
+
+    private void prepareForm() {
+        setPreferredSize(new Dimension(30, 30));
+        addMouseListener(this);
     }
 }
