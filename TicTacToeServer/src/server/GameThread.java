@@ -16,15 +16,15 @@ import java.util.logging.Logger;
  */
 public class GameThread extends Thread {
 
-    ServerThread igracJedan;
-    ServerThread igracDva;
+    ClientThread igracJedan;
+    ClientThread igracDva;
     BufferedReader ulazniTok;
     PrintStream izlazniTok;
     String matrica[][] = new String[3][3];
     String vr = "";
     boolean kraj = false;
 
-    public GameThread(ServerThread igracJedan, ServerThread igracDva) {
+    public GameThread(ClientThread igracJedan, ClientThread igracDva) {
         this.igracJedan = igracJedan;
         this.igracDva = igracDva;
     }
@@ -93,7 +93,7 @@ public class GameThread extends Thread {
             igracJedan.setPoslaoZahtev(false);
             igracDva.setPoslaoZahtev(false);
         } catch (Exception e) {
-            Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, e);
 
         }
     }

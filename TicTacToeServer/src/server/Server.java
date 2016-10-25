@@ -10,6 +10,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import kontroler.Kontroler;
+import util.Util;
 
 /**
  *
@@ -17,19 +19,17 @@ import java.util.List;
  */
 public class Server {
 
-    public static List<ServerThread> igraci = new ArrayList<ServerThread>();
-
-    private static int port = 8888;
 
     public static void main(String[] args) throws IOException {
-        Socket soket;
+        Socket socket;
 
-        ServerSocket serverSoket = new ServerSocket(port);
+        ServerSocket serverSoket = new ServerSocket(Util.PORT);
+        
         while (true) {
-            soket = serverSoket.accept();
-            ServerThread igrac = new ServerThread(soket, soket.getInetAddress().toString());
-            igraci.add(igrac);
-            igrac.start();
+            socket = serverSoket.accept();
+            ClientThread player = new ClientThread(socket, socket.getInetAddress().toString());
+            Kontroler.getInstance().addPlayerThread(player);
+            player.start();
         }
     }
 }
