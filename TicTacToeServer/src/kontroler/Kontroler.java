@@ -5,9 +5,11 @@
  */
 package kontroler;
 
+import domain.Player;
 import java.util.ArrayList;
 import java.util.List;
 import server.ClientThread;
+import server.GameThread;
 
 /**
  *
@@ -17,9 +19,11 @@ public class Kontroler {
 
     private static Kontroler instance;
     private List<ClientThread> clientThreads;
+    private List<GameThread> games;
 
     private Kontroler() {
         clientThreads = new ArrayList<>();
+        games = new ArrayList<>();
     }
 
     public List<ClientThread> getClientThreads() {
@@ -35,6 +39,19 @@ public class Kontroler {
 
     public void addPlayerThread(ClientThread clientThread) {
         clientThreads.add(clientThread);
+    }
+
+    public ClientThread findClientThread(Player player) {
+        for (ClientThread clientThread : clientThreads) {
+            if (clientThread.getPlayer().equals(player)) {
+                return clientThread;
+            }
+        }
+        return null;
+    }
+
+    public void remove(ClientThread playerThread) {
+        clientThreads.remove(playerThread);
     }
 
 }

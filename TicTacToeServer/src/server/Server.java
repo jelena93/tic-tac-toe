@@ -8,8 +8,6 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import kontroler.Kontroler;
 import util.Util;
 
@@ -19,15 +17,15 @@ import util.Util;
  */
 public class Server {
 
+    private static Socket socket;
 
     public static void main(String[] args) throws IOException {
-        Socket socket;
 
         ServerSocket serverSoket = new ServerSocket(Util.PORT);
-        
+
         while (true) {
             socket = serverSoket.accept();
-            ClientThread player = new ClientThread(socket, socket.getInetAddress().toString());
+            ClientThread player = new ClientThread(socket);
             Kontroler.getInstance().addPlayerThread(player);
             player.start();
         }
