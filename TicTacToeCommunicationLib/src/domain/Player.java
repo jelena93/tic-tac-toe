@@ -14,12 +14,12 @@ import java.util.Objects;
 public class Player {
 
     private String username;
-    private boolean canPlay;
     private Player playingWith;
-    private String move;
+    private String mark;
+    private boolean playersTurn;
+    private int position;
 
     public Player() {
-        canPlay = true;
     }
 
     public Player(String username) {
@@ -34,14 +34,6 @@ public class Player {
         this.username = username;
     }
 
-    public boolean isCanPlay() {
-        return canPlay;
-    }
-
-    public void setCanPlay(boolean canPlay) {
-        this.canPlay = canPlay;
-    }
-
     public Player getPlayingWith() {
         return playingWith;
     }
@@ -50,12 +42,28 @@ public class Player {
         this.playingWith = playingWith;
     }
 
-    public String getMove() {
-        return move;
+    public String getMark() {
+        return mark;
     }
 
-    public void setMove(String move) {
-        this.move = move;
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
+
+    public boolean isPlayersTurn() {
+        return playersTurn;
+    }
+
+    public void setPlayersTurn(boolean playersTurn) {
+        this.playersTurn = playersTurn;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     @Override

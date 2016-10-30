@@ -18,5 +18,13 @@ public class Util {
     public static final int PLAY_RESPONSE = 3;
     public static final int ACCEPT = 4;
     public static final int REJECT = 5;
-    
+    public static final int START = 6;
+    public static final int MOVE = 7;
+    public static final int END = 8;
+    public static final int QUIT = 9;
+
+    public static final String WIN_MSG = "You win";
+    public static final String LOOSE_MSG = "You loose";
+    public static final String TIED_MSG = "Tied";
+
 }
