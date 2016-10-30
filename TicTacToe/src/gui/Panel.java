@@ -12,8 +12,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.BufferedReader;
-import java.io.PrintStream;
+import java.io.IOException;
+import kontroler.Kontroler;
 
 /**
  *
@@ -21,16 +21,12 @@ import java.io.PrintStream;
  */
 public class Panel extends javax.swing.JPanel implements MouseListener {
 
-    BufferedReader ulazniTok;
-    PrintStream izlazniTok;
-    FrmGame frmGlavna;
-    private int position;
-    String potez;
-    String igrac;
-    boolean odigrao = false;
+    private boolean played = false;
+    private final int position;
+    private String playerMove;
 
-    public Panel(int pozicija) {
-        this.position = pozicija;
+    public Panel(int position) {
+        this.position = position;
         prepareForm();
     }
 
@@ -54,16 +50,16 @@ public class Panel extends javax.swing.JPanel implements MouseListener {
                 }
             }
         }
-        if (odigrao) {
-            if (potez.equals("x")) {
+        if (played) {
+            if (Kontroler.getInstance().getPlayer().getMark().equals("x")) {
                 g2d.drawLine(10, 10, getWidth() - 10, getHeight() - 10);
                 g2d.drawLine(10, getHeight() - 10, getWidth() - 10, 10);
             } else {
                 g2d.drawOval((getWidth() - r) / 2, (getHeight() - r) / 2, r, r);
             }
         }
-        if (igrac != null) {
-            if (igrac.equals("x")) {
+        if (playerMove != null) {
+            if (playerMove.equals("x")) {
                 g2d.drawLine(10, 10, getWidth() - 10, getHeight() - 10);
                 g2d.drawLine(10, getHeight() - 10, getWidth() - 10, 10);
             } else {
@@ -98,17 +94,19 @@ public class Panel extends javax.swing.JPanel implements MouseListener {
     // End of variables declaration//GEN-END:variables
     @Override
     public void mouseClicked(MouseEvent e) {
-        if (frmGlavna.yourTurn && !odigrao && igrac == null) {
-            odigrao = true;
-            repaint();
-            frmGlavna.posaljiPotez(potez, position);
-
+        if (Kontroler.getInstance().getPlayer().isPlayersTurn() && !played && playerMove == null) {
+            try {
+                Kontroler.getInstance().sendMove(position);
+                played = true;
+                repaint();
+            } catch (IOException ex) {
+                Kontroler.getInstance().showErrorMessage(ex.getMessage());
+            }
         }
     }
 
-    public void nacrtaj(String potez) {
-        igrac = potez;
-        frmGlavna.yourTurn = true;
+    public void draw(String potez) {
+        playerMove = potez;
         repaint();
     }
 

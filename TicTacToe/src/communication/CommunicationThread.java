@@ -23,7 +23,8 @@ public class CommunicationThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        boolean end = false;
+        while (!end) {
             try {
                 ObjectInputStream in = new ObjectInputStream(Kontroler.getInstance().getSocket().getInputStream());
                 Message msg = (Message) in.readObject();
@@ -47,6 +48,19 @@ public class CommunicationThread extends Thread {
                     }
                     case Util.REJECT: {
                         Kontroler.getInstance().showMessage(msg.getMessage().toString());
+                        break;
+                    }
+                    case Util.START: {
+                        Kontroler.getInstance().startGame((Player) msg.getMessage());
+                        break;
+                    }
+                    case Util.MOVE: {
+                        Kontroler.getInstance().showMove((Player) msg.getMessage());
+                        break;
+                    }
+                    case Util.END: {
+                        Kontroler.getInstance().end((String) msg.getMessage());
+                        end = true;
                         break;
                     }
                 }
