@@ -14,10 +14,7 @@ public class Util {
     public static final int PORT = 8888;
     public static final int ERROR = -1;
     public static final int LOGIN = 1;
-    public static final int PLAY_REQUEST = 2;
-    public static final int PLAY_RESPONSE = 3;
-    public static final int ACCEPT = 4;
-    public static final int REJECT = 5;
+    public static final int PLAY = 2;
     public static final int START = 6;
     public static final int MOVE = 7;
     public static final int END = 8;
