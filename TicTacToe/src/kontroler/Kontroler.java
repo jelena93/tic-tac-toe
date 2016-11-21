@@ -5,15 +5,14 @@
  */
 package kontroler;
 
+import communication.CommunicationThread;
 import domain.Message;
 import domain.Player;
 import gui.FrmGame;
-import gui.FrmMain;
+import gui.FrmPlay;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import util.Util;
 import gui.IWindowShowMessages;
 import javax.swing.JFrame;
@@ -28,25 +27,15 @@ public class Kontroler {
     private Socket socket;
     private String ipAddress;
     private Player player;
-    private List<Player> players;
     private IWindowShowMessages window;
 
     private Kontroler() {
         ipAddress = "localhost";
-        players = new ArrayList<>();
         player = new Player();
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(List<Player> players) {
-        this.players = players;
     }
 
     public Socket getSocket() {
@@ -73,12 +62,7 @@ public class Kontroler {
         player.setUsername(username);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         out.writeObject(new Message(Util.LOGIN, username));
-    }
-
-    public void sendRequest(IWindowShowMessages window, String player) throws Exception {
-        this.window = window;
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(new Message(Util.PLAY_REQUEST, player));
+        new CommunicationThread().start();
     }
 
     public void showMessage(String message) {
@@ -93,29 +77,20 @@ public class Kontroler {
         window.showQuestionMessage("", question);
     }
 
-    public void showMainWindow(List<Player> players) {
-        this.players = players;
+    public void showMainWindow() {
         ((JFrame) window).dispose();
-        FrmMain frmMain = new FrmMain();
-        window = frmMain;
-        frmMain.setVisible(true);
-    }
-
-    public void sendResponse(int response) throws IOException {
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        if (response == 0) {
-            out.writeObject(new Message(Util.ACCEPT, null));
-        } else {
-            out.writeObject(new Message(Util.REJECT, null));
-        }
+        FrmPlay frmPlay = new FrmPlay();
+        window = frmPlay;
+        frmPlay.setVisible(true);
     }
 
     public void end(String msg) {
+        ((FrmGame) window).setResult(msg);
         window.showMessage("End", msg);
         ((JFrame) window).dispose();
-        FrmMain frmMain = new FrmMain();
-        window = frmMain;
-        frmMain.setVisible(true);
+        FrmPlay frmPlay = new FrmPlay();
+        window = frmPlay;
+        frmPlay.setVisible(true);
     }
 
     public void startGame(Player player) {
@@ -128,14 +103,31 @@ public class Kontroler {
     public void showMove(Player player) {
         this.player = player;
         ((FrmGame) window).draw(player.getPlayingWith().getMark(), player.getPlayingWith().getPosition());
+        ((FrmGame) window).setResult("Your move");
         this.player.setPlayersTurn(true);
     }
 
     public void sendMove(int position) throws IOException {
         player.setPlayersTurn(false);
+        ((FrmGame) window).setResult("");
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        Message msg = new Message(Util.MOVE);
-        msg.setMessage(position);
+        Message msg = new Message(Util.MOVE, position);
         out.writeObject(msg);
+    }
+
+    public void play() throws IOException {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        Message msg = new Message(Util.PLAY);
+        out.writeObject(msg);
+    }
+
+    public void quit() throws IOException {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        Message msg = new Message(Util.QUIT);
+        out.writeObject(msg);
+        ((FrmGame)window).dispose();
+        FrmPlay frmPlay = new FrmPlay();
+        window = frmPlay;
+        frmPlay.setVisible(true);
     }
 }

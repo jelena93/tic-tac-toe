@@ -9,7 +9,6 @@ import domain.Message;
 import domain.Player;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kontroler.Kontroler;
@@ -35,19 +34,7 @@ public class CommunicationThread extends Thread {
                         break;
                     }
                     case Util.LOGIN: {
-                        Kontroler.getInstance().showMainWindow((List<Player>) msg.getMessage());
-                        break;
-                    }
-                    case Util.PLAY_REQUEST: {
-                        Kontroler.getInstance().showQuestionMessage(msg.getMessage().toString());
-                        break;
-                    }
-                    case Util.ACCEPT: {
-                        Kontroler.getInstance().startGame((Player) msg.getMessage());
-                        break;
-                    }
-                    case Util.REJECT: {
-                        Kontroler.getInstance().showMessage(msg.getMessage().toString());
+                        Kontroler.getInstance().showMainWindow();
                         break;
                     }
                     case Util.START: {
@@ -55,7 +42,9 @@ public class CommunicationThread extends Thread {
                         break;
                     }
                     case Util.MOVE: {
-                        Kontroler.getInstance().showMove((Player) msg.getMessage());
+                        Player p = (Player) msg.getMessage();
+                        System.out.println(p);
+                        Kontroler.getInstance().showMove(p);
                         break;
                     }
                     case Util.END: {

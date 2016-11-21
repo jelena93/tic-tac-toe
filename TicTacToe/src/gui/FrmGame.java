@@ -5,7 +5,10 @@
  */
 package gui;
 
+import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import kontroler.Kontroler;
 
@@ -15,13 +18,13 @@ import kontroler.Kontroler;
  */
 public class FrmGame extends javax.swing.JFrame implements IWindowShowMessages {
 
-    String igrac;
     private Panel[] panels;
 
     public FrmGame() {
         initComponents();
         fillPanels();
-        jlblUsername.setText(Kontroler.getInstance().getPlayer().getUsername() + " " + igrac);
+        jlblUsername.setText(Kontroler.getInstance().getPlayer().getUsername() + " "
+                + Kontroler.getInstance().getPlayer().getMark());
     }
 
     public void setResult(String res) {
@@ -52,7 +55,13 @@ public class FrmGame extends javax.swing.JFrame implements IWindowShowMessages {
         jpGame.setLayout(new java.awt.GridLayout(3, 3));
 
         jlblUsername.setText("jLabel2");
-
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -106,9 +115,16 @@ public class FrmGame extends javax.swing.JFrame implements IWindowShowMessages {
         for (int i = 0; i < 9; i++) {
             Panel p = new Panel((i + 1));
             jpGame.add(p);
-            panels[1] = p;
+            panels[i] = p;
             p.repaint();
         }
     }
 
+    private void formWindowClosing(WindowEvent evt) {
+        try {
+            Kontroler.getInstance().quit();
+        } catch (IOException ex) {
+            Logger.getLogger(FrmGame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
