@@ -52,14 +52,18 @@ public class GameThread extends Thread {
             Logger.getLogger(GameThread.class.getName()).log(Level.SEVERE, null, ex);
         }
         Message msg;
-        while (true) {
+        boolean playing = true;
+        while (playing) {
             try {
                 ObjectInputStream in = new ObjectInputStream(playerOneThread.getSocket().getInputStream());
                 msg = (Message) in.readObject();
                 if (msg.getMessageType() == Util.QUIT) {
-
+                    playing = false;
+                    System.out.println("kraj");
                 }
-                playerOneThread.getPlayer().setPosition((int) msg.getMessage());
+                System.out.println("**" + msg.getMessage());
+//                playerOneThread.getPlayer().setPosition((int) msg.getMessage());
+                playerTwoThread.getPlayer().getPlayingWith().setPosition((int) msg.getMessage());
                 send(new Message(Util.MOVE, playerTwoThread.getPlayer()), playerTwoThread.getSocket());
                 setValue((int) msg.getMessage(), playerOneThread.getPlayer().getMark());
                 check();
@@ -80,7 +84,7 @@ public class GameThread extends Thread {
                 ObjectInputStream in = new ObjectInputStream(playerTwoThread.getSocket().getInputStream());
                 msg = (Message) in.readObject();
                 playerTwoThread.getPlayer().setPosition((int) msg.getMessage());
-                send(new Message(Util.MOVE, playerOneThread), playerOneThread.getSocket());
+                send(new Message(Util.MOVE, playerOneThread.getPlayer()), playerOneThread.getSocket());
                 setValue((int) msg.getMessage(), playerTwoThread.getPlayer().getMark());
                 check();
                 if (gameEnd) {

@@ -11,9 +11,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import kontroler.Kontroler;
@@ -48,8 +48,9 @@ public class ClientThread extends Thread {
     @Override
     public void run() {
         boolean stopThread = false;
-        while (!stopThread) {
-            try {
+        try {
+            while (!stopThread) {
+
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                 Message msg = (Message) in.readObject();
                 switch (msg.getMessageType()) {
@@ -57,28 +58,11 @@ public class ClientThread extends Thread {
                         login(msg.getMessage().toString());
                         break;
                     }
-                    case Util.PLAY_REQUEST: {
-                        sendRequest(msg.getMessage().toString());
-                        break;
-                    }
-                    case Util.ACCEPT: {
-                        ClientThread ct = Kontroler.getInstance().findClientThread(player.getPlayingWith());
-                        double num = Math.random();
-                        if (num <= 0.5) {
-                            GameThread game = new GameThread(this, ct);
-                            game.start();
-                        } else {
-                            GameThread game = new GameThread(ct, this);
-                            game.start();
+                    case Util.PLAY: {
+                        boolean stop = play();
+                        if (stop) {
+                            stopThread = true;
                         }
-                        stopThread = true;
-                        break;
-                    }
-                    case Util.REJECT: {
-                        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                        msg = new Message(Util.REJECT, "Player: " + player.getPlayingWith().getUsername() + " doesn't want to play with you");
-                        out.writeObject(msg);
-                        player.setPlayingWith(null);
                         break;
                     }
                     case Util.QUIT: {
@@ -87,11 +71,12 @@ public class ClientThread extends Thread {
                         break;
                     }
                 }
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
-            }
 
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        System.out.println("kraj "+player.getUsername());
     }
 
     @Override
@@ -130,33 +115,52 @@ public class ClientThread extends Thread {
         }
         if (!exists) {
             player.setUsername(username);
-            List<Player> playersCanPlay = new ArrayList<>();
-            for (ClientThread clientThread : clientThreads) {
-                if (clientThread.getPlayer().getPlayingWith() == null && !clientThread.getPlayer().equals(player)) {
-                    playersCanPlay.add(clientThread.getPlayer());
-                }
-            }
             out = new ObjectOutputStream(socket.getOutputStream());
-            msg = new Message(Util.LOGIN, playersCanPlay);
+            msg = new Message(Util.LOGIN, null);
             out.writeObject(msg);
 
         }
     }
 
-    private void sendRequest(String username) throws IOException {
+    private boolean play() throws IOException {
         ObjectOutputStream out;
         Message msg;
-        List<ClientThread> clientThreads = Kontroler.getInstance().getClientThreads();
-        for (ClientThread clientThread : clientThreads) {
-            if (clientThread.getPlayer().getUsername().equals(username)) {
-                Socket s = clientThread.getSocket();
-                out = new ObjectOutputStream(s.getOutputStream());
-                msg = new Message(Util.PLAY_REQUEST, "Player: " + player.getUsername() + " wants to play with you");
-                out.writeObject(msg);
-                player.setPlayingWith(clientThread.getPlayer());
-                break;
+        Kontroler.getInstance().addClientThreadToQueue(this);
+        if (Kontroler.getInstance().getClientThreadsQueue().size() < 2 && player.getPlayingWith() == null) {
+            for (int i = 0; i < 10; i++) {
+                if (Kontroler.getInstance().getClientThreadsQueue().size() < 2 && player.getPlayingWith() == null) {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(ClientThread.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
+        if (player.getPlayingWith() != null) {
+            return true;
+        }
+        ClientThread ct = Kontroler.getInstance().findAPlayer(this);
+
+        if (ct == null && player.getPlayingWith() == null) {
+            out = new ObjectOutputStream(socket.getOutputStream());
+            msg = new Message(Util.ERROR, "There are now online players");
+            out.writeObject(msg);
+            return false;
+        }
+        if (player.getPlayingWith() != null) {
+            return true;
+        }
+        int rand = new Random().nextInt(1);
+        if (rand == 0) {
+            GameThread game = new GameThread(this, ct);
+            game.start();
+        } else {
+            GameThread game = new GameThread(ct, this);
+            game.start();
+        }
+        return true;
+
     }
 
 }

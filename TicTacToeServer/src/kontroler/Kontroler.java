@@ -18,16 +18,22 @@ import server.GameThread;
 public class Kontroler {
 
     private static Kontroler instance;
-    private List<ClientThread> clientThreads;
-    private List<GameThread> games;
+    private final List<ClientThread> clientThreads;
+    private final List<ClientThread> clientThreadsQueue;
+    private final List<GameThread> games;
 
     private Kontroler() {
         clientThreads = new ArrayList<>();
+        clientThreadsQueue = new ArrayList<>();
         games = new ArrayList<>();
     }
 
     public List<ClientThread> getClientThreads() {
         return clientThreads;
+    }
+
+    public List<ClientThread> getClientThreadsQueue() {
+        return clientThreadsQueue;
     }
 
     public static Kontroler getInstance() {
@@ -37,8 +43,12 @@ public class Kontroler {
         return instance;
     }
 
-    public void addPlayerThread(ClientThread clientThread) {
+    public void addClientThread(ClientThread clientThread) {
         clientThreads.add(clientThread);
+    }
+
+    public void addClientThreadToQueue(ClientThread clientThread) {
+        clientThreadsQueue.add(clientThread);
     }
 
     public ClientThread findClientThread(Player player) {
@@ -52,6 +62,18 @@ public class Kontroler {
 
     public void remove(ClientThread playerThread) {
         clientThreads.remove(playerThread);
+    }
+
+    public synchronized ClientThread findAPlayer(ClientThread ct) {
+        System.out.println("***" + ct.getPlayer().getUsername());
+        for (int i = 0; i < clientThreadsQueue.size(); i++) {
+            ClientThread clientThread = clientThreadsQueue.get(i);
+            if (!clientThread.equals(ct)) {
+                clientThreadsQueue.remove(clientThread);
+                return clientThread;
+            }
+        }
+        return null;
     }
 
 }
