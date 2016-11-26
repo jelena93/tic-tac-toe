@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import kontroler.Kontroler;
 import util.Util;
 
 /**
@@ -20,8 +21,8 @@ import util.Util;
  */
 public class GameThread extends Thread {
 
-    private final ClientThread playerOneThread;
-    private final ClientThread playerTwoThread;
+    private ClientThread playerOneThread;
+    private ClientThread playerTwoThread;
     private final String[][] matrix;
     private String value = "";
     private boolean gameEnd;
@@ -59,44 +60,54 @@ public class GameThread extends Thread {
                 msg = (Message) in.readObject();
                 if (msg.getMessageType() == Util.QUIT) {
                     playing = false;
-                    System.out.println("kraj");
-                }
-                System.out.println("**" + msg.getMessage());
-//                playerOneThread.getPlayer().setPosition((int) msg.getMessage());
-                playerTwoThread.getPlayer().getPlayingWith().setPosition((int) msg.getMessage());
-                send(new Message(Util.MOVE, playerTwoThread.getPlayer()), playerTwoThread.getSocket());
-                setValue((int) msg.getMessage(), playerOneThread.getPlayer().getMark());
-                check();
-                if (gameEnd) {
-                    send(new Message(Util.END, Util.WIN_MSG), playerOneThread.getSocket());
-                    send(new Message(Util.END, Util.LOOSE_MSG), playerTwoThread.getSocket());
+                    send(new Message(Util.QUIT, "Player " + playerOneThread.getPlayer().getUsername() + " left the game"), playerOneThread.getSocket());
+                    Kontroler.getInstance().recreateClientThread(playerOneThread);
+                    Kontroler.getInstance().recreateClientThread(playerTwoThread);
                 } else {
-                    boolean isTied = checkIfTied();
-                    if (isTied) {
-                        send(new Message(Util.END, Util.TIED_MSG), playerOneThread.getSocket());
-                        send(new Message(Util.END, Util.TIED_MSG), playerTwoThread.getSocket());
+                    playerTwoThread.getPlayer().getPlayingWith().setPosition((int) msg.getMessage());
+                    send(new Message(Util.MOVE, playerTwoThread.getPlayer()), playerTwoThread.getSocket());
+                    setValue((int) msg.getMessage(), playerOneThread.getPlayer().getMark());
+                    check();
+                    if (gameEnd) {
+                        send(new Message(Util.END, Util.WIN_MSG), playerOneThread.getSocket());
+                        send(new Message(Util.END, Util.LOOSE_MSG), playerTwoThread.getSocket());
+                    } else {
+                        boolean isTied = checkIfTied();
+                        if (isTied) {
+                            send(new Message(Util.END, Util.TIED_MSG), playerOneThread.getSocket());
+                            send(new Message(Util.END, Util.TIED_MSG), playerTwoThread.getSocket());
+                        }
                     }
                 }
+
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(GameThread.class.getName()).log(Level.SEVERE, null, ex);
             }
             try {
                 ObjectInputStream in = new ObjectInputStream(playerTwoThread.getSocket().getInputStream());
                 msg = (Message) in.readObject();
-                playerTwoThread.getPlayer().setPosition((int) msg.getMessage());
-                send(new Message(Util.MOVE, playerOneThread.getPlayer()), playerOneThread.getSocket());
-                setValue((int) msg.getMessage(), playerTwoThread.getPlayer().getMark());
-                check();
-                if (gameEnd) {
-                    send(new Message(Util.END, Util.WIN_MSG), playerTwoThread.getSocket());
-                    send(new Message(Util.END, Util.LOOSE_MSG), playerOneThread.getSocket());
+                if (msg.getMessageType() == Util.QUIT) {
+                    playing = false;
+                    send(new Message(Util.QUIT, "Player " + playerTwoThread.getPlayer().getUsername() + " left the game"), playerOneThread.getSocket());
+                    Kontroler.getInstance().recreateClientThread(playerOneThread);
+                    Kontroler.getInstance().recreateClientThread(playerTwoThread);
                 } else {
-                    boolean isTied = checkIfTied();
-                    if (isTied) {
-                        send(new Message(Util.END, Util.TIED_MSG), playerOneThread.getSocket());
-                        send(new Message(Util.END, Util.TIED_MSG), playerTwoThread.getSocket());
+                    playerTwoThread.getPlayer().setPosition((int) msg.getMessage());
+                    send(new Message(Util.MOVE, playerOneThread.getPlayer()), playerOneThread.getSocket());
+                    setValue((int) msg.getMessage(), playerTwoThread.getPlayer().getMark());
+                    check();
+                    if (gameEnd) {
+                        send(new Message(Util.END, Util.WIN_MSG), playerTwoThread.getSocket());
+                        send(new Message(Util.END, Util.LOOSE_MSG), playerOneThread.getSocket());
+                    } else {
+                        boolean isTied = checkIfTied();
+                        if (isTied) {
+                            send(new Message(Util.END, Util.TIED_MSG), playerOneThread.getSocket());
+                            send(new Message(Util.END, Util.TIED_MSG), playerTwoThread.getSocket());
+                        }
                     }
                 }
+
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(GameThread.class.getName()).log(Level.SEVERE, null, ex);
             }

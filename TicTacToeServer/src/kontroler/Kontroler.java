@@ -76,4 +76,12 @@ public class Kontroler {
         return null;
     }
 
+    public void recreateClientThread(ClientThread ct) {
+        clientThreads.remove(ct);
+        ClientThread newCT = new ClientThread(ct.getSocket());
+        newCT.getPlayer().setUsername(ct.getPlayer().getUsername());
+        clientThreads.add(newCT);
+        newCT.start();
+    }
+
 }

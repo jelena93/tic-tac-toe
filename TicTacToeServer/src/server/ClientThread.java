@@ -50,7 +50,6 @@ public class ClientThread extends Thread {
         boolean stopThread = false;
         try {
             while (!stopThread) {
-
                 ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
                 Message msg = (Message) in.readObject();
                 switch (msg.getMessageType()) {
@@ -71,17 +70,14 @@ public class ClientThread extends Thread {
                         break;
                     }
                 }
-
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Kontroler.getInstance().remove(this);
         }
-        System.out.println("kraj "+player.getUsername());
     }
 
     @Override
-    public boolean equals(Object obj
-    ) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
