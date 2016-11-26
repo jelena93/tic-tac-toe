@@ -47,10 +47,6 @@ public class Kontroler {
         clientThreads.add(clientThread);
     }
 
-    public void addClientThreadToQueue(ClientThread clientThread) {
-        clientThreadsQueue.add(clientThread);
-    }
-
     public ClientThread findClientThread(Player player) {
         for (ClientThread clientThread : clientThreads) {
             if (clientThread.getPlayer().equals(player)) {
@@ -62,10 +58,10 @@ public class Kontroler {
 
     public void remove(ClientThread playerThread) {
         clientThreads.remove(playerThread);
+        clientThreadsQueue.remove(playerThread);
     }
 
     public synchronized ClientThread findAPlayer(ClientThread ct) {
-        System.out.println("***" + ct.getPlayer().getUsername());
         for (int i = 0; i < clientThreadsQueue.size(); i++) {
             ClientThread clientThread = clientThreadsQueue.get(i);
             if (!clientThread.equals(ct)) {

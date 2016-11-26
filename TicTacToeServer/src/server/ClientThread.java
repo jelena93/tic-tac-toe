@@ -61,6 +61,7 @@ public class ClientThread extends Thread {
                         boolean stop = play();
                         if (stop) {
                             stopThread = true;
+                            Kontroler.getInstance().getClientThreadsQueue().remove(this);
                         }
                         break;
                     }
@@ -121,7 +122,8 @@ public class ClientThread extends Thread {
     private boolean play() throws IOException {
         ObjectOutputStream out;
         Message msg;
-        Kontroler.getInstance().addClientThreadToQueue(this);
+        Kontroler.getInstance().getClientThreadsQueue().add(this);
+        System.out.println(Kontroler.getInstance().getClientThreadsQueue().size());
         if (Kontroler.getInstance().getClientThreadsQueue().size() < 2 && player.getPlayingWith() == null) {
             for (int i = 0; i < 10; i++) {
                 if (Kontroler.getInstance().getClientThreadsQueue().size() < 2 && player.getPlayingWith() == null) {
