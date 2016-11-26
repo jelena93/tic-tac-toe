@@ -20,10 +20,9 @@ import util.Util;
  */
 public class CommunicationThread extends Thread {
 
-    public static boolean end = false;
-
     @Override
     public void run() {
+        boolean end = false;
         while (!end) {
             try {
                 ObjectInputStream in = new ObjectInputStream(Kontroler.getInstance().getSocket().getInputStream());
@@ -44,7 +43,6 @@ public class CommunicationThread extends Thread {
                     }
                     case Util.MOVE: {
                         Player p = (Player) msg.getMessage();
-                        System.out.println(p);
                         Kontroler.getInstance().showMove(p);
                         break;
                     }
@@ -64,6 +62,8 @@ public class CommunicationThread extends Thread {
             }
 
         }
+        System.out.println("asd");
+
     }
 
 }
