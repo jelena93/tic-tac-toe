@@ -103,14 +103,14 @@ public class FrmPlay extends javax.swing.JFrame implements IWindowShowMessages {
     public void showMessage(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.PLAIN_MESSAGE);
     }
-    
+
     @Override
     public void showErrorMessage(String title, String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
     }
-    
+
     @Override
-    public void showQuestionMessage(String title, String message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int showQuestionMessage(String title, String message) {
+        return JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
     }
 }

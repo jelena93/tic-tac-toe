@@ -11,9 +11,9 @@ package gui;
  */
 public interface IWindowShowMessages {
 
-    public void showMessage(String title, String message);
+    void showMessage(String title, String message);
 
-    public void showErrorMessage(String title, String message);
+    void showErrorMessage(String title, String message);
 
-    public void showQuestionMessage(String title, String message);
+    int showQuestionMessage(String title, String message);
 }

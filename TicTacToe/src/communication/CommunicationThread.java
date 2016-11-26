@@ -20,9 +20,10 @@ import util.Util;
  */
 public class CommunicationThread extends Thread {
 
+    public static boolean end = false;
+
     @Override
     public void run() {
-        boolean end = false;
         while (!end) {
             try {
                 ObjectInputStream in = new ObjectInputStream(Kontroler.getInstance().getSocket().getInputStream());
@@ -48,6 +49,11 @@ public class CommunicationThread extends Thread {
                         break;
                     }
                     case Util.END: {
+                        Kontroler.getInstance().end((String) msg.getMessage());
+                        end = true;
+                        break;
+                    }
+                    case Util.QUIT: {
                         Kontroler.getInstance().end((String) msg.getMessage());
                         end = true;
                         break;

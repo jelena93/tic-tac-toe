@@ -125,7 +125,8 @@ public class Kontroler {
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         Message msg = new Message(Util.QUIT);
         out.writeObject(msg);
-        ((FrmGame)window).dispose();
+        CommunicationThread.end = true;
+        ((FrmGame) window).dispose();
         FrmPlay frmPlay = new FrmPlay();
         window = frmPlay;
         frmPlay.setVisible(true);

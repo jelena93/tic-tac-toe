@@ -54,29 +54,29 @@ public class FrmLogin extends javax.swing.JFrame implements IWindowShowMessages 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(jtxtUsername))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(304, Short.MAX_VALUE)
-                        .addComponent(jbtnLogin)))
-                .addGap(29, 29, 29))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addGap(23, 23, 23)
+                                                .addComponent(jLabel2)
+                                                .addGap(18, 18, 18)
+                                                .addComponent(jtxtUsername))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addContainerGap(304, Short.MAX_VALUE)
+                                                .addComponent(jbtnLogin)))
+                                .addGap(29, 29, 29))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jtxtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(61, 61, 61)
-                .addComponent(jbtnLogin)
-                .addContainerGap(53, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jtxtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(61, 61, 61)
+                                .addComponent(jbtnLogin)
+                                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         pack();
@@ -156,8 +156,8 @@ public class FrmLogin extends javax.swing.JFrame implements IWindowShowMessages 
     }
 
     @Override
-    public void showQuestionMessage(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+    public int showQuestionMessage(String title, String message) {
+        return JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
     }
 
 }

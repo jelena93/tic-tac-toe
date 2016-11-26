@@ -106,8 +106,8 @@ public class FrmGame extends javax.swing.JFrame implements IWindowShowMessages {
     }
 
     @Override
-    public void showQuestionMessage(String title, String message) {
-        JOptionPane.showMessageDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+    public int showQuestionMessage(String title, String message) {
+        return JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
     }
 
     private void fillPanels() {
@@ -122,7 +122,10 @@ public class FrmGame extends javax.swing.JFrame implements IWindowShowMessages {
 
     private void formWindowClosing(WindowEvent evt) {
         try {
-            Kontroler.getInstance().quit();
+            int response = showQuestionMessage("", "Are you sure you want to quit?");
+            if (response == 0) {
+                Kontroler.getInstance().quit();
+            }
         } catch (IOException ex) {
             Logger.getLogger(FrmGame.class.getName()).log(Level.SEVERE, null, ex);
         }
